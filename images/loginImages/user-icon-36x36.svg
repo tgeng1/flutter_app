@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>user-icon-36x36</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M11.8471134,14.4480233 C13.8980741,14.1493411 15.9490349,14 17.9999957,14 C20.0509569,14 22.1019182,14.1493412 24.1528795,14.4480235 L24.152879,14.4480267 C28.0843575,15.0205696 30.999994,18.391567 30.999994,22.3645166 L30.999994,30 C30.999994,31.1045695 30.1045635,32 28.999994,32 L6.99999405,32.0000004 C5.89542455,32.0000004 4.99999405,31.1045699 4.99999405,30.0000004 C4.99999405,30.0000003 4.99999405,30.0000001 4.99999405,30 L4.99999122,22.3645195 C4.99999202,18.3915665 7.91563141,15.0205666 11.8471134,14.4480233 Z" id="path-1"></path>
+        <circle id="path-2" cx="18" cy="12" r="8"></circle>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="app-routes.login" transform="translate(-72.000000, -528.000000)">
+            <g id="Group-2" transform="translate(48.000000, 496.000000)">
+                <g id="Group-51" transform="translate(24.000000, 32.000000)">
+                    <rect id="user-icon-36x36" fill="#D8D8D8" opacity="0" x="0" y="0" width="36" height="36"></rect>
+                    <g id="Rectangle-54">
+                        <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        <path stroke="#ABB5C1" stroke-width="3" d="M12.0632787,15.9323658 C8.8689492,16.3975572 6.49999187,19.136495 6.49999122,22.364519 L6.49999405,30.0000004 C6.49999405,30.2761428 6.72385167,30.5000004 6.99999402,30.5000004 L28.999994,30.5 C29.2761364,30.5 29.499994,30.2761424 29.499994,30 L29.499994,22.3645166 C29.499994,19.1364956 27.1310396,16.3975596 23.9367141,15.932366 C21.9571486,15.644081 19.978427,15.5 17.9999957,15.5 C16.0215648,15.5 14.0428437,15.644081 12.0632787,15.9323658 Z"></path>
+                    </g>
+                    <g id="Oval-17">
+                        <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-2"></use>
+                        <circle stroke="#ABB5C1" stroke-width="3" cx="18" cy="12" r="6.5"></circle>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

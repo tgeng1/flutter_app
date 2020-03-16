@@ -1,0 +1,19 @@
+library commonUtils;
+import 'package:shared_preferences/shared_preferences.dart';
+
+
+class SaveUtil {
+  //读取数据
+  static Future<String> getInfo(String keyName) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String data = await sharedPreferences.getString(keyName);
+    return data;
+  }
+
+//保存数据
+  static Future<bool> saveInfo(String keyName, String value) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    bool isOk = await sharedPreferences.setString(keyName, value);
+    return isOk;
+  }
+}
