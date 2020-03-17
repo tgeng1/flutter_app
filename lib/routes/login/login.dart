@@ -73,7 +73,6 @@ class LoginState extends State<Login> {
       'phone': _userController.text,
       'password': _passwordController.text
     };
-    print(dataInfo);
     var result = HttpUtil().call('post', '/userapi/users/authenticate', dataInfo);
     result.then((onValue) {
       print(onValue);

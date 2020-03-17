@@ -1,23 +1,22 @@
 import 'package:dio/dio.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
 const REST_API_PATH = {
-  "localhost:8000": "https://dev-nd.jsure.com/xm-app-backend",
-  "dev-xm.jsure.com": "https://dev-nd.jsure.com/xm-app-backend",
-  "test-xm.jsure.com": "https://test-nd.jsure.com/xm-app-backend",
-  "xm.jsure.com": "https://nd.jsure.com/xm-app-backend",
-  "clone-xm.jsure.com": "https://clone-nd.jsure.com/xm-app-backend"
+  "DEV": "https://dev-nd.jsure.com/xm-app-backend",
+  "TEST": "https://test-nd.jsure.com/xm-app-backend",
+  "PRO": "https://nd.jsure.com/xm-app-backend",
+  "CLONE": "https://clone-nd.jsure.com/xm-app-backend"
 };
 
 class HttpUtil {
 
   String token = '';
   String method, url;
-  var _headers, data;
+  Map<String, dynamic> _headers, data;
 
 
   static HttpUtil instance;
   Dio dio;
-  BaseOptions options;
+  static BaseOptions options;
   CancelToken cancelToken = new CancelToken();
 
   static HttpUtil getInstance() {
@@ -25,7 +24,7 @@ class HttpUtil {
     return instance;
   }
 
-  static String env = 'localhost:8000';
+  static String env = 'DEV';
   static int uploadRestApiTimeOut = 12000;
   static String restApiBasePath = REST_API_PATH[env];
   static Response response;
@@ -33,6 +32,7 @@ class HttpUtil {
 
   HttpUtil() {
     LocalStorageUtil.getInfo('env').then((onValue) {
+      print('111111111');
       restApiBasePath = REST_API_PATH[onValue];
     }).catchError((onError) {
       print(onError);
@@ -64,29 +64,21 @@ class HttpUtil {
       responseType: ResponseType.json
     );
     dio = new Dio(options);
-
   }
-  Future call(method, url, data) async{
-    url = restApiBasePath + url;
-    print(url);
+  Future<Map<String, dynamic>> call(method, url, data, {options}) async{
     try{
       if (method == 'get') {
-        response = await dio.get(url);
+        response = await dio.get<Map<String, dynamic>>(url, options: options);
       } else if (method == 'post') {
-        response = await dio.post(url, data: data);
+        response = await dio.post<Map<String, dynamic>>(url, data: data, options: options);
       } else if(method == 'put') {
-        response = await dio.put(url, data: data);
+        response = await dio.put<Map<String, dynamic>>(url, data: data, options: options);
       } else if(method == 'delete') {
-        response = await dio.delete(url);
+        response = await dio.delete<Map<String, dynamic>>(url, options: options);
       } else if(method == 'patch') {
-        response = await dio.patch(url, data: data);
+        response = await dio.patch<Map<String, dynamic>>(url, data: data, options: options);
       }
-      return {
-        'status': response.statusCode,
-        'code': response.data.code,
-        'message': response.data.msg,
-        'payload': response.data.payload
-      };
+      return response.data;
     }catch(err){
       return err;
     }
