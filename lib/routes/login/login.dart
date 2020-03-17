@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterapp/routes/home/home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
-
+import 'package:flutterapp/api/common.dart';
 class Login extends StatefulWidget {
   @override
   Login({Key key}) : super(key: key);
@@ -41,8 +41,8 @@ class LoginState extends State<Login> {
     return new SimpleDialogOption(
       child: new Text(env),
       onPressed: () {
-        Future<bool> setEnv = SaveUtil.saveInfo('env', env);
-        setEnv.then((onValue) {
+        LocalStorageUtil.saveInfo('env', env)
+        .then((onValue) {
           showToast('保存成功');
         }).catchError((onError) {
           showToast('保存失败');
@@ -67,7 +67,19 @@ class LoginState extends State<Login> {
   void _onSubmit() {
     if (_userController.text.isEmpty || _passwordController.text.isEmpty) {
       showToast('手机号和密码不能为空');
+      return null;
     }
+    var dataInfo = {
+      'phone': _userController.text,
+      'password': _passwordController.text
+    };
+    print(dataInfo);
+    var result = HttpUtil().call('post', '/userapi/users/authenticate', dataInfo);
+    result.then((onValue) {
+      print(onValue);
+    }).catchError((onError) {
+      print(onError);
+    });
   }
 
 
@@ -168,7 +180,7 @@ class LoginState extends State<Login> {
             Center(
               child: Container(
                 width: 242.3,
-                height: 414.1,
+                height: 450.1,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
