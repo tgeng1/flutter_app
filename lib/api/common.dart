@@ -33,7 +33,6 @@ class HttpUtil {
       responseType: ResponseType.json
     );
     dio = new Dio(options);
-    print('------baseUrl-------->' + restApiBasePath);
   }
 
   Future<Map<String, dynamic>> call(method, url, isToken, {data, options}) async{
@@ -56,8 +55,16 @@ class HttpUtil {
         response = await dio.patch<Map<String, dynamic>>(url, data: data, options: options);
       }
       return response.data;
-    }catch(err){
-      return err;
+    } on DioError catch(e){
+      if (e.response != null) {
+        print('--------------');
+        print(e.response);
+        print('-----type----->');
+        print(e.type);
+      } else {
+        print(e.message);
+        print(e.request);
+      }
     }
   }
 }

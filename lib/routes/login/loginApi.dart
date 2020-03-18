@@ -41,7 +41,7 @@ class LoginApi {
           };
       }
     } catch(err) {
-      if (err.code == HttpCode.CODE_NO_NETWORK) {
+      if (err['code'] == HttpCode.CODE_NO_NETWORK) {
         return {
           'code': 'error',
           'msg': "网络异常，请稍后再试"
@@ -67,12 +67,12 @@ class LoginApi {
     try {
       var result = await LoginServiceApi.getUserAccess();
 
-      switch (result.code) {
+      switch (result['code']) {
         case HttpCode.CODE_SUCCESS:
           return {
             'code': 'success',
             'msg': '获取用户权限成功',
-            'payload': result.payload
+            'payload': result['payload']
           };
         default:
           return {
@@ -81,7 +81,7 @@ class LoginApi {
           };
       }
     } catch (err) { // Error processing
-      if (err.code == HttpCode.CODE_NO_NETWORK) {
+      if (err['code'] == HttpCode.CODE_NO_NETWORK) {
         return {
           'code': 'error',
           'msg': "网络异常，请稍后再试"
@@ -102,12 +102,12 @@ class LoginApi {
     try {
       var result = await LoginServiceApi.getConfig();
 
-      switch (result.code) {
+      switch (result['code']) {
         case HttpCode.CODE_SUCCESS:
           return {
             'code': 'success',
             'msg': '获取基础信息成功',
-            'payload': result.payload
+            'payload': result['payload']
           };
         default:
           return {
@@ -116,7 +116,7 @@ class LoginApi {
           };
         }
       } catch (err) { // Error processing
-        if (err.code == HttpCode.CODE_NO_NETWORK) {
+        if (err['code'] == HttpCode.CODE_NO_NETWORK) {
           return {
             'code': 'error',
             'msg': "网络异常，请稍后再试"

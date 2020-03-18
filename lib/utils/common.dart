@@ -10,8 +10,10 @@ class Global {
   static String env;
   static String token;
   static int uploadRestApiTimeOut = 12000;
-
   static String restApiBasePath = REST_API_PATH[env];
+
+  //config
+  static Map xmConfig;
   //初始化全局信息，会在APP启动时执行
   static Future init() async {
     String _env = await LocalStorageUtil.getInfo('env');
@@ -21,5 +23,10 @@ class Global {
       String _token = await LocalStorageUtil.getInfo('token');
       token = _token != null ? _token : '';
     }
+
+  }
+
+  static Future setConfig(configInfo) async {
+    xmConfig = configInfo;
   }
 }

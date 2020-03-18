@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterapp/routes/login/login.dart';
+import 'package:flutterapp/routes/home/home.dart';
 
 class App extends StatefulWidget {
   @override
@@ -13,7 +14,11 @@ class AppState extends State<App> {
       title: 'Welcome to Flutter',
       home: new Container(
         child: Login(),
-      )
+      ),
+      routes: {
+        '/login': (BuildContext context) => Login(),
+        '/home': (BuildContext context) => Home()
+      },
     );
   }
 }

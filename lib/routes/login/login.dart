@@ -18,7 +18,9 @@ class LoginState extends State<Login> {
   @override
 
   void _onPush() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+    Navigator.of(context).push(new MaterialPageRoute(builder: (context){
+      return new Home();
+    }));
   }
 
   void showSimpleDialog() {
@@ -79,10 +81,32 @@ class LoginState extends State<Login> {
       'password': _passwordController.text
     };
     var result = await LoginApi.userLogin(dataInfo);
-    print('-------result');
-    print(result);
+    if (result != null && result['code'] == 'success') {
+      _getConfig();
+      _setAccessRight();
+    }
   }
 
+  void _getConfig() async {
+    var result = await LoginApi.getConfig();
+    if (result != null && result['code'] == 'success') {
+      var configPayload = result['payload'] ?? {};
+      Global.setConfig(configPayload);
+    }
+  }
+
+  void _setAccessRight() async {
+    var result = await LoginApi.getUserAccess();
+    if (result != null && result['code'] == 'success') {
+      List accessRightPayload = result['payload'] ?? [];
+      List<String> accessRightList = [];
+      for (var i = 0; i < accessRightPayload.length; i++) {
+        accessRightList.add(accessRightPayload[i]);
+      }
+      await LocalStorageUtil.saveList('accessRight', accessRightList);
+      _onPush();
+    }
+  }
 
   Widget backgroundImage(width, double height, String image){
     return new Container(
