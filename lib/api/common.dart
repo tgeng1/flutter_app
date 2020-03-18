@@ -1,18 +1,10 @@
 import 'package:dio/dio.dart';
-import 'package:flutterapp/utils/commonUtils.dart';
-const REST_API_PATH = {
-  "DEV": "https://dev-nd.jsure.com/xm-app-backend",
-  "TEST": "https://test-nd.jsure.com/xm-app-backend",
-  "PRO": "https://nd.jsure.com/xm-app-backend",
-  "CLONE": "https://clone-nd.jsure.com/xm-app-backend"
-};
+import 'package:flutterapp/utils/common.dart';
 
 class HttpUtil {
-
-  String token = '';
-  String method, url;
-  Map<String, dynamic> _headers, data;
-
+  String method;
+  static int uploadRestApiTimeOut = Global.uploadRestApiTimeOut;
+  static String token = Global.token;
 
   static HttpUtil instance;
   Dio dio;
@@ -24,48 +16,33 @@ class HttpUtil {
     return instance;
   }
 
-  static String env = 'DEV';
-  static int uploadRestApiTimeOut = 12000;
-  static String restApiBasePath = REST_API_PATH[env];
   static Response response;
 
 
   HttpUtil() {
-    LocalStorageUtil.getInfo('env').then((onValue) {
-      print('111111111');
-      restApiBasePath = REST_API_PATH[onValue];
-    }).catchError((onError) {
-      print(onError);
-      return null;
-    });
-    LocalStorageUtil.getInfo('token').then((onValue) {
-      token = onValue;
-    }).catchError((onError) {
-      print(onError);
-      return null;
-    });
-    if (method == 'get') {
-      _headers = {
-        'Accept': 'application/json',
-        'x-access-token': token
-      };
-    } else {
-      _headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'x-access-token': token
-      };
-    }
+    String restApiBasePath = Global.restApiBasePath;
     options = new BaseOptions(
       baseUrl: restApiBasePath,
       connectTimeout: uploadRestApiTimeOut,
-      headers: _headers,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      },
       contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.json
     );
     dio = new Dio(options);
+    print('------baseUrl-------->' + restApiBasePath);
   }
-  Future<Map<String, dynamic>> call(method, url, data, {options}) async{
+
+  Future<Map<String, dynamic>> call(method, url, isToken, {data, options}) async{
+    if (method == 'get') {
+      dio.options.headers = {
+        'Accept': 'application/json',
+        'x-access-token': token
+      };
+    }
     try{
       if (method == 'get') {
         response = await dio.get<Map<String, dynamic>>(url, options: options);

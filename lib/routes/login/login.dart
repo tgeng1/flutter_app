@@ -4,6 +4,8 @@ import 'package:flutterapp/routes/home/home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
 import 'package:flutterapp/api/common.dart';
+import 'package:flutterapp/utils/common.dart';
+import './loginApi.dart';
 class Login extends StatefulWidget {
   @override
   Login({Key key}) : super(key: key);
@@ -43,7 +45,10 @@ class LoginState extends State<Login> {
       onPressed: () {
         LocalStorageUtil.saveInfo('env', env)
         .then((onValue) {
-          showToast('保存成功');
+          Global.init().then((e) {
+            showToast('切换为$env');
+            print(Global.env);
+          });
         }).catchError((onError) {
           showToast('保存失败');
         });
@@ -64,7 +69,7 @@ class LoginState extends State<Login> {
     );
   }
 
-  void _onSubmit() {
+  void _onSubmit() async{
     if (_userController.text.isEmpty || _passwordController.text.isEmpty) {
       showToast('手机号和密码不能为空');
       return null;
@@ -73,12 +78,9 @@ class LoginState extends State<Login> {
       'phone': _userController.text,
       'password': _passwordController.text
     };
-    var result = HttpUtil().call('post', '/userapi/users/authenticate', dataInfo);
-    result.then((onValue) {
-      print(onValue);
-    }).catchError((onError) {
-      print(onError);
-    });
+    var result = await LoginApi.userLogin(dataInfo);
+    print('-------result');
+    print(result);
   }
 
 
