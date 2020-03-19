@@ -33,7 +33,7 @@ class HomeState extends State<Home> {
               Icons.list
             ),
             title: Text(
-              'routes.task'
+              '任务'
             )
           ),
           BottomNavigationBarItem(
@@ -41,7 +41,7 @@ class HomeState extends State<Home> {
                   Icons.list
               ),
               title: Text(
-                  'routes.patient'
+                  '患者'
               )
           ),
           BottomNavigationBarItem(
@@ -49,7 +49,7 @@ class HomeState extends State<Home> {
                   Icons.list
               ),
               title: Text(
-                  'client'
+                  '客户'
               )
           ),
           BottomNavigationBarItem(
@@ -57,7 +57,7 @@ class HomeState extends State<Home> {
                   Icons.list
               ),
               title: Text(
-                  'routes.project'
+                  '中心'
               )
           )
         ],

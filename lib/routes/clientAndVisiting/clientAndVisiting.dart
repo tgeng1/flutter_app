@@ -12,7 +12,7 @@ class ClientAndVisitingState extends State<ClientAndVisiting> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'client'
+            '客户'
         ),
       ),
     );

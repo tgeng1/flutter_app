@@ -18,9 +18,7 @@ class LoginState extends State<Login> {
   @override
 
   void _onPush() {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context){
-      return new Home();
-    }));
+    Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context) => Home()), (route) => route == null);
   }
 
   void showSimpleDialog() {

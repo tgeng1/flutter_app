@@ -12,7 +12,7 @@ class TaskState extends State<Task> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'routes.task'
+          '任务'
         ),
       ),
     );

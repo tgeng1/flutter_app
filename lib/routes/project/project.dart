@@ -12,7 +12,7 @@ class ProjectState extends State<Project> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'routes.project'
+            '中心'
         ),
       ),
     );

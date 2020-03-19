@@ -12,7 +12,7 @@ class PatientState extends State<Patient> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'routes.patient'
+            '患者'
         ),
       ),
     );
