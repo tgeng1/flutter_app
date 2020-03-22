@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutterapp/routes/home/home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
-import 'package:flutterapp/api/common.dart';
 import 'package:flutterapp/utils/common.dart';
 import './loginApi.dart';
 class Login extends StatefulWidget {
@@ -13,13 +12,11 @@ class Login extends StatefulWidget {
 }
 
 class LoginState extends State<Login> {
+  static List routeList = [];
+
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  @override
 
-  void _onPush() {
-    Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context) => Home()), (route) => route == null);
-  }
 
   void showSimpleDialog() {
     showDialog<Null>(
@@ -69,7 +66,13 @@ class LoginState extends State<Login> {
     );
   }
 
-  void _onSubmit() async{
+  Future _onPush() async{
+    await Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return Home(routeList: routeList);
+    }));
+  }
+
+  Future _onSubmit() async{
     if (_userController.text.isEmpty || _passwordController.text.isEmpty) {
       showToast('手机号和密码不能为空');
       return null;
@@ -80,8 +83,13 @@ class LoginState extends State<Login> {
     };
     var result = await LoginApi.userLogin(dataInfo);
     if (result != null && result['code'] == 'success') {
-      _getConfig();
-      _setAccessRight();
+      var updateUserInfo = await Global.updateUserData(result['payload']['token'], result['payload']['_id']);
+      if (updateUserInfo == true) {
+        _getConfig();
+        _setAccessRight();
+      }
+    } else {
+      showToast(result['msg']);
     }
   }
 
@@ -89,11 +97,13 @@ class LoginState extends State<Login> {
     var result = await LoginApi.getConfig();
     if (result != null && result['code'] == 'success') {
       var configPayload = result['payload'] ?? {};
-      Global.setConfig(configPayload);
+      await Global.setConfig(configPayload);
+    } else {
+      showToast(result['msg']);
     }
   }
 
-  void _setAccessRight() async {
+  Future _setAccessRight() async {
     var result = await LoginApi.getUserAccess();
     if (result != null && result['code'] == 'success') {
       List accessRightPayload = result['payload'] ?? [];
@@ -102,7 +112,9 @@ class LoginState extends State<Login> {
         accessRightList.add(accessRightPayload[i]);
       }
       await LocalStorageUtil.saveList('accessRight', accessRightList);
-      _onPush();
+      await _onPush();
+    } else {
+      showToast(result['msg']);
     }
   }
 
@@ -160,6 +172,37 @@ class LoginState extends State<Login> {
     );
   }
 
+  Widget loginBackground() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            backgroundImage(87.7, 207.7, 'images/loginImages/login-left-top.png'),
+            GestureDetector(
+              child: backgroundImage(92.6, 95.6, 'images/loginImages/login-right-top.png'),
+              onDoubleTap: () {
+                showSimpleDialog();
+              },
+            ),
+          ],
+        ),
+        backgroundImage(double.infinity, 247.4, 'images/loginImages/login-middle.png'),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            backgroundImage(86.9, 98.3, 'images/loginImages/login-left-buttom.png'),
+            backgroundImage(133.7, 116.6, 'images/loginImages/login-right-buttom.png'),
+          ],
+        )
+      ],
+    );
+  }
+
   Widget build(BuildContext context) {
     return new Scaffold(
       body: Container(
@@ -172,34 +215,7 @@ class LoginState extends State<Login> {
         ),
         child: Stack(
           children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    backgroundImage(87.7, 207.7, 'images/loginImages/login-left-top.png'),
-                    GestureDetector(
-                      child: backgroundImage(92.6, 95.6, 'images/loginImages/login-right-top.png'),
-                      onDoubleTap: () {
-                        showSimpleDialog();
-                      },
-                    ),
-                  ],
-                ),
-                backgroundImage(double.infinity, 247.4, 'images/loginImages/login-middle.png'),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    backgroundImage(86.9, 98.3, 'images/loginImages/login-left-buttom.png'),
-                    backgroundImage(133.7, 116.6, 'images/loginImages/login-right-buttom.png'),
-                  ],
-                )
-              ],
-            ),
+            loginBackground(),
             Center(
               child: Container(
                 width: 242.3,
@@ -213,9 +229,7 @@ class LoginState extends State<Login> {
                       width: double.infinity,
                       child: RaisedButton(
                         child: Text('登陆'),
-                        onPressed: () {
-                          _onSubmit();
-                        },
+                        onPressed: _onSubmit,
                         textColor: Colors.white,
                         color: Colors.blue,
                       ),

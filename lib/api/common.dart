@@ -1,10 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutterapp/utils/common.dart';
+import 'package:flutterapp/routes/login/login.dart';
+import 'package:flutterapp/utils/commonUtils.dart';
 
 class HttpUtil {
   String method;
   static int uploadRestApiTimeOut = Global.uploadRestApiTimeOut;
-  static String token = Global.token;
+  static String token;
 
   static HttpUtil instance;
   Dio dio;
@@ -21,6 +24,7 @@ class HttpUtil {
 
   HttpUtil() {
     String restApiBasePath = Global.restApiBasePath;
+    token ??= Global.token;
     options = new BaseOptions(
       baseUrl: restApiBasePath,
       connectTimeout: uploadRestApiTimeOut,
@@ -33,6 +37,26 @@ class HttpUtil {
       responseType: ResponseType.json
     );
     dio = new Dio(options);
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (RequestOptions options) async {
+        return options;
+      },
+      onResponse: (Response response) async {
+        return response;
+      },
+      onError: (DioError e) async {
+        if (e.response.statusCode == 401) {
+          await Global.signOut();
+          print('---------navigator');
+          print(CustomNavigatorObService.getIntStance().navigator);
+          CustomNavigatorObService.getIntStance().navigator.pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => Login()),
+              (route) => route == null
+          );
+        }
+        return e;
+      }
+    ));
   }
 
   Future<Map<String, dynamic>> call(method, url, isToken, {data, options}) async{
@@ -57,13 +81,19 @@ class HttpUtil {
       return response.data;
     } on DioError catch(e){
       if (e.response != null) {
-        print('--------------');
+        print('------err--------');
         print(e.response);
-        print('-----type----->');
-        print(e.type);
+        print(e.response.statusCode);
+        return {
+          'errInfo': e.response
+        };
       } else {
         print(e.message);
         print(e.request);
+        return {
+          'msg': e.message,
+          'req': e.request
+        };
       }
     }
   }

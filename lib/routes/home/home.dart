@@ -3,13 +3,17 @@ import 'package:flutterapp/routes/task/task.dart';
 import 'package:flutterapp/routes/patient/patient.dart';
 import 'package:flutterapp/routes/clientAndVisiting/clientAndVisiting.dart';
 import 'package:flutterapp/routes/project/project.dart';
+import 'package:flutterapp/routes/personal/personal.dart';
 
 class Home extends StatefulWidget {
+  const Home({Key key, @required this.routeList}) : super(key: key);
+  final routeList;
   @override
   createState() => HomeState();
 }
 
 class HomeState extends State<Home> {
+  List routeList = [];
   int _currentIndex = 0;
   List<Widget> list = List();
   @override
@@ -26,6 +30,7 @@ class HomeState extends State<Home> {
     // TODO: implement build
     return new Scaffold(
       body: list[_currentIndex],
+//      drawer: Personal(),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(

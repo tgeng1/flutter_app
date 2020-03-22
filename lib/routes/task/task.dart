@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutterapp/routes/personal/personal.dart';
 class Task extends StatefulWidget {
   @override
   createState() => TaskState();
@@ -15,6 +15,7 @@ class TaskState extends State<Task> {
           '任务'
         ),
       ),
+      drawer: Personal(),
     );
   }
 }

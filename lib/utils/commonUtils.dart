@@ -1,4 +1,4 @@
-library commonUtils;
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -10,13 +10,31 @@ class LocalStorageUtil {
     return data;
   }
 
-  static Future saveInfo(String keyName, String value) async {
+  static Future<bool> saveInfo(String keyName, String value) async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setString(keyName, value);
+    bool result = await _pref.setString(keyName, value);
+    return result;
   }
 
   static Future saveList(String keyName, List<String> value) async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setStringList(keyName, value);
+    bool result = await _pref.setStringList(keyName, value);
+    return result;
+  }
+
+  static Future removeInfo(String keyName) async{
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    bool result = await _pref.remove(keyName);
+    return result;
+  }
+}
+
+class CustomNavigatorObService extends NavigatorObserver {
+  static CustomNavigatorObService _instance;
+  static CustomNavigatorObService getIntStance() {
+    if (_instance == null) {
+      _instance = CustomNavigatorObService();
+    }
+    return _instance;
   }
 }

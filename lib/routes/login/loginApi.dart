@@ -3,22 +3,17 @@ import 'package:flutterapp/api/httpCode/index.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
 class LoginApi {
 //  login
-  static userLogin(loginInfo) async {
+  static Future userLogin(loginInfo) async {
     try{
       var result = await LoginServiceApi.userLogin(loginInfo['phone'], loginInfo['password']);
 
       switch (result['code']) {
         case HttpCode.CODE_SUCCESS:
-          {
-            var payload = result['payload'];
-            // Set userInf to localStorage
-            LocalStorageUtil.saveInfo('token', payload['token']);
-            LocalStorageUtil.saveInfo('userId', payload['_id']);
-            return {
-              'code': 'success',
-              'msg': '登录成功'
-            };
-          }
+          return {
+            'code': 'success',
+            'msg': '登录成功',
+            'payload': result['payload']
+          };
         case HttpCode.CODE_INVALID_USERNAME_OR_PASSWORD:
           return {
             'code': 'error',
@@ -63,7 +58,7 @@ class LoginApi {
   /**
    * Get user access
    */
-  static getUserAccess() async {
+  static Future getUserAccess() async {
     try {
       var result = await LoginServiceApi.getUserAccess();
 
@@ -98,7 +93,7 @@ class LoginApi {
   /**
    * Get user access
    */
-  static getConfig() async {
+  static Future getConfig() async {
     try {
       var result = await LoginServiceApi.getConfig();
 
