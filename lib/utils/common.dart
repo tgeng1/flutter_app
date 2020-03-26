@@ -1,4 +1,8 @@
+import 'package:flutterapp/app.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
+import 'package:flutterapp/routes/login/login.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class Global {
   static const REST_API_PATH = {
     "DEV": "https://dev-nd.jsure.com/xm-app-backend",
@@ -43,5 +47,21 @@ class Global {
     await LocalStorageUtil.removeInfo('accessRight');
     token = null;
     xmConfig = null;
+    navigatorKey.currentState.pushAndRemoveUntil(
+      new MaterialPageRoute(
+        builder: (BuildContext context) => new Login()), (
+      route) => route == null);
+  }
+
+  static void showToast(String text) {
+    Fluttertoast.showToast(
+        msg: text,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.grey,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
   }
 }

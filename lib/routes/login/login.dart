@@ -43,26 +43,13 @@ class LoginState extends State<Login> {
         LocalStorageUtil.saveInfo('env', env)
         .then((onValue) {
           Global.init().then((e) {
-            showToast('切换为$env');
-            print(Global.env);
+            Global.showToast('切换为$env');
           });
         }).catchError((onError) {
-          showToast('保存失败');
+          Global.showToast('保存失败');
         });
         Navigator.pop(context);
       },
-    );
-  }
-
-  void showToast(String text) {
-    Fluttertoast.showToast(
-      msg: text,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIos: 1,
-      backgroundColor: Colors.grey,
-      textColor: Colors.white,
-      fontSize: 16.0
     );
   }
 
@@ -74,7 +61,7 @@ class LoginState extends State<Login> {
 
   Future _onSubmit() async{
     if (_userController.text.isEmpty || _passwordController.text.isEmpty) {
-      showToast('手机号和密码不能为空');
+      Global.showToast('手机号和密码不能为空');
       return null;
     }
     var dataInfo = {
@@ -82,6 +69,7 @@ class LoginState extends State<Login> {
       'password': _passwordController.text
     };
     var result = await LoginApi.userLogin(dataInfo);
+    print(result);
     if (result != null && result['code'] == 'success') {
       var updateUserInfo = await Global.updateUserData(result['payload']['token'], result['payload']['_id']);
       if (updateUserInfo == true) {
@@ -89,17 +77,17 @@ class LoginState extends State<Login> {
         _setAccessRight();
       }
     } else {
-      showToast(result['msg']);
+      Global.showToast(result['msg']);
     }
   }
 
-  void _getConfig() async {
+  Future _getConfig() async {
     var result = await LoginApi.getConfig();
     if (result != null && result['code'] == 'success') {
       var configPayload = result['payload'] ?? {};
       await Global.setConfig(configPayload);
     } else {
-      showToast(result['msg']);
+      Global.showToast(result['msg']);
     }
   }
 
@@ -114,7 +102,7 @@ class LoginState extends State<Login> {
       await LocalStorageUtil.saveList('accessRight', accessRightList);
       await _onPush();
     } else {
-      showToast(result['msg']);
+      Global.showToast(result['msg']);
     }
   }
 

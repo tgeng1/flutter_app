@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutterapp/utils/common.dart';
-import 'package:flutterapp/routes/login/login.dart';
-import 'package:flutterapp/utils/commonUtils.dart';
+
 
 class HttpUtil {
   String method;
@@ -47,12 +45,6 @@ class HttpUtil {
       onError: (DioError e) async {
         if (e.response.statusCode == 401) {
           await Global.signOut();
-          print('---------navigator');
-          print(CustomNavigatorObService.getIntStance().navigator);
-          CustomNavigatorObService.getIntStance().navigator.pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => Login()),
-              (route) => route == null
-          );
         }
         return e;
       }

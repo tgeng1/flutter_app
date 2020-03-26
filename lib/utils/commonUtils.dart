@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class LocalStorageUtil {
 
   static Future<String> getInfo(String keyName) async {
@@ -27,14 +26,5 @@ class LocalStorageUtil {
     bool result = await _pref.remove(keyName);
     return result;
   }
-}
 
-class CustomNavigatorObService extends NavigatorObserver {
-  static CustomNavigatorObService _instance;
-  static CustomNavigatorObService getIntStance() {
-    if (_instance == null) {
-      _instance = CustomNavigatorObService();
-    }
-    return _instance;
-  }
 }
