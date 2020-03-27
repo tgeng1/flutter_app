@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/routes/home/home.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
 import 'package:flutterapp/utils/common.dart';
 import './loginApi.dart';
+import 'package:flutterapp/components/customDialog.dart';
+import 'package:flutterapp/components/customButton.dart';
 class Login extends StatefulWidget {
   @override
   Login({Key key}) : super(key: key);
@@ -17,22 +18,18 @@ class LoginState extends State<Login> {
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-
   void showSimpleDialog() {
+    List<Widget> list = [
+      _chooseEnv('DEV'),
+      _chooseEnv('TEST'),
+      _chooseEnv('CLONE'),
+      _chooseEnv('PRO')
+    ];
     showDialog<Null>(
       context: context,
-      builder: (BuildContext context) {
-        return new SimpleDialog(
-          title: new Text('选择环境'),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-          children: <Widget>[
-            _chooseEnv('DEV'),
-            _chooseEnv('TEST'),
-            _chooseEnv('CLONE'),
-            _chooseEnv('PRO'),
-          ],
-        );
-      },
+      builder: (context) {
+        return CustomDialog(text: '选择环境', list: list,);
+      }
     );
   }
 
@@ -213,15 +210,7 @@ class LoginState extends State<Login> {
                   children: <Widget>[
                     Image.asset('images/loginImages/logo.png', width: 62.5, height: 37.8,),
                     loginForm(),
-                    Container(
-                      width: double.infinity,
-                      child: RaisedButton(
-                        child: Text('登陆'),
-                        onPressed: _onSubmit,
-                        textColor: Colors.white,
-                        color: Colors.blue,
-                      ),
-                    ),
+                    CustomButton(text: '登陆', pressed: _onSubmit, width: double.infinity, textColor: Colors.white, color: Colors.blue,),
                     Text('忘记密码?'),
                     Text('版本号: 3.0')
                   ],
