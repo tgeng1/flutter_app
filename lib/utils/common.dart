@@ -1,4 +1,5 @@
 import 'package:flutterapp/app.dart';
+import 'package:flutterapp/components/customDialog.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
 import 'package:flutterapp/routes/login/login.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,16 @@ class Global {
         backgroundColor: Colors.grey,
         textColor: Colors.white,
         fontSize: 16.0
+    );
+  }
+
+  static void signOutAboutNotAccess() {
+    showDialog<Null>(
+      context: navigatorKey.currentState.overlay.context,
+      barrierDismissible: false,
+      builder: (context) {
+          return CustomDialog(title: '提示', content: '权限更改，请退出重新登陆', onOkFnc: signOut, onCancelFnc: null);
+      }
     );
   }
 }

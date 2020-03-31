@@ -4,7 +4,6 @@ import 'package:flutterapp/routes/home/home.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
 import 'package:flutterapp/utils/common.dart';
 import './loginApi.dart';
-import 'package:flutterapp/components/customDialog.dart';
 import 'package:flutterapp/components/customButton.dart';
 class Login extends StatefulWidget {
   @override
@@ -28,7 +27,11 @@ class LoginState extends State<Login> {
     showDialog<Null>(
       context: context,
       builder: (context) {
-        return CustomDialog(text: '选择环境', list: list,);
+        return SimpleDialog(
+          title: Text('选择环境'),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+          children: list,
+        );
       }
     );
   }
@@ -73,8 +76,6 @@ class LoginState extends State<Login> {
         _getConfig();
         _setAccessRight();
       }
-    } else {
-      Global.showToast(result['msg']);
     }
   }
 
@@ -83,8 +84,6 @@ class LoginState extends State<Login> {
     if (result != null && result['code'] == 'success') {
       var configPayload = result['payload'] ?? {};
       await Global.setConfig(configPayload);
-    } else {
-      Global.showToast(result['msg']);
     }
   }
 
@@ -98,8 +97,6 @@ class LoginState extends State<Login> {
       }
       await LocalStorageUtil.saveList('accessRight', accessRightList);
       await _onPush();
-    } else {
-      Global.showToast(result['msg']);
     }
   }
 

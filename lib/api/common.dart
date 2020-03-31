@@ -44,7 +44,7 @@ class HttpUtil {
       },
       onError: (DioError e) async {
         if (e.response.statusCode == 401) {
-          await Global.signOut();
+          Global.signOutAboutNotAccess();
         }
         return e;
       }
