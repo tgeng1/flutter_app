@@ -17,8 +17,6 @@ class Global {
   static String restApiBasePath = REST_API_PATH[env];
   static String userId;
 
-  //config
-  static Map xmConfig;
   //初始化全局信息，会在APP启动时执行
   static Future init() async {
     env = await LocalStorageUtil.getInfo('env') ?? 'DEV';
@@ -39,15 +37,18 @@ class Global {
     }
   }
 
-  static Future setConfig(configInfo) async {
-    xmConfig = configInfo;
+  static setConfig(configInfo) async{
+    await LocalStorageUtil.writeJson(configInfo);
+  }
+
+  static setAccessRight(accessRightList) async{
+    await LocalStorageUtil.saveList('accessRight', accessRightList);
   }
 
   static Future signOut() async{
     await LocalStorageUtil.removeInfo('token');
     await LocalStorageUtil.removeInfo('accessRight');
     token = null;
-    xmConfig = null;
     navigatorKey.currentState.pushAndRemoveUntil(
       new MaterialPageRoute(
         builder: (BuildContext context) => new Login()), (

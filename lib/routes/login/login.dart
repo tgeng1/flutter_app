@@ -74,7 +74,6 @@ class LoginState extends State<Login> {
       var updateUserInfo = await Global.updateUserData(result['payload']['token'], result['payload']['_id']);
       if (updateUserInfo == true) {
         _getConfig();
-        _setAccessRight();
       }
     }
   }
@@ -82,6 +81,7 @@ class LoginState extends State<Login> {
   Future _getConfig() async {
     var result = await LoginApi.getConfig();
     if (result != null && result['code'] == 'success') {
+      _setAccessRight();
       var configPayload = result['payload'] ?? {};
       await Global.setConfig(configPayload);
     }
@@ -92,10 +92,8 @@ class LoginState extends State<Login> {
     if (result != null && result['code'] == 'success') {
       List accessRightPayload = result['payload'] ?? [];
       List<String> accessRightList = [];
-      for (var i = 0; i < accessRightPayload.length; i++) {
-        accessRightList.add(accessRightPayload[i]);
-      }
-      await LocalStorageUtil.saveList('accessRight', accessRightList);
+      accessRightPayload.map((item) => accessRightList.add(item)).toList();
+      await Global.setAccessRight(accessRightList);
       await _onPush();
     }
   }

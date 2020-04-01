@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageUtil {
@@ -25,6 +27,30 @@ class LocalStorageUtil {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     bool result = await _pref.remove(keyName);
     return result;
+  }
+
+  static localPath() async{
+    var tempDir = await getApplicationDocumentsDirectory();
+    String tempPath = tempDir.path;
+    return tempPath;
+  }
+
+  static localFile(path) async{
+    return new File('$path/xmConfig.json');
+  }
+
+  // read json
+  static Future<Map<String, dynamic>> readJson() async{
+    final file = await localFile(await localPath());
+    String str = await file.readAsString();
+    Map<String, dynamic> map = json.decode(str);
+    return map;
+  }
+
+  // write json
+  static Future writeJson(map) async{
+    final file = await localFile(await localPath());
+    return file.writeAsString(jsonEncode(map));
   }
 
 }

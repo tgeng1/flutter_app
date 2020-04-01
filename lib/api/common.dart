@@ -10,7 +10,7 @@ class HttpUtil {
   static HttpUtil instance;
   Dio dio;
   static BaseOptions options;
-  CancelToken cancelToken = new CancelToken();
+  CancelToken _cancelToken = new CancelToken();
 
   static HttpUtil getInstance() {
     if (null == instance) instance = new HttpUtil();
@@ -45,8 +45,10 @@ class HttpUtil {
       onError: (DioError e) async {
         if (e.response.statusCode == 401) {
           Global.signOutAboutNotAccess();
+          return null;
+        } else {
+          return e;
         }
-        return e;
       }
     ));
   }
@@ -60,15 +62,15 @@ class HttpUtil {
     }
     try{
       if (method == 'get') {
-        response = await dio.get<Map<String, dynamic>>(url, options: options);
+        response = await dio.get<Map<String, dynamic>>(url, options: options, cancelToken: _cancelToken);
       } else if (method == 'post') {
-        response = await dio.post<Map<String, dynamic>>(url, data: data, options: options);
+        response = await dio.post<Map<String, dynamic>>(url, data: data, options: options, cancelToken: _cancelToken);
       } else if(method == 'put') {
-        response = await dio.put<Map<String, dynamic>>(url, data: data, options: options);
+        response = await dio.put<Map<String, dynamic>>(url, data: data, options: options, cancelToken: _cancelToken);
       } else if(method == 'delete') {
-        response = await dio.delete<Map<String, dynamic>>(url, options: options);
+        response = await dio.delete<Map<String, dynamic>>(url, options: options, cancelToken: _cancelToken);
       } else if(method == 'patch') {
-        response = await dio.patch<Map<String, dynamic>>(url, data: data, options: options);
+        response = await dio.patch<Map<String, dynamic>>(url, data: data, options: options, cancelToken: _cancelToken);
       }
       return response.data;
     } on DioError catch(e){
