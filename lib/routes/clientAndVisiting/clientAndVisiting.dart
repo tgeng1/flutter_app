@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutterapp/routes/personal/personal.dart';
 class ClientAndVisiting extends StatefulWidget {
   @override
-  createState() => ClientAndVisitingState();
+  _ClientAndVisitingState createState() => _ClientAndVisitingState();
 }
 
-class ClientAndVisitingState extends State<ClientAndVisiting> {
+class _ClientAndVisitingState extends State<ClientAndVisiting> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -15,6 +15,7 @@ class ClientAndVisitingState extends State<ClientAndVisiting> {
             '客户'
         ),
       ),
+      drawer: Personal(),
     );
   }
 }

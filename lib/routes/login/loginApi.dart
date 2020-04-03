@@ -1,6 +1,5 @@
 import 'package:flutterapp/api/loginServiceApi.dart';
 import 'package:flutterapp/api/httpCode/index.dart';
-import 'package:flutterapp/utils/commonUtils.dart';
 class LoginApi {
 //  login
   static Future userLogin(loginInfo) async {

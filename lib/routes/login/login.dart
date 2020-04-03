@@ -6,18 +6,16 @@ import 'package:flutterapp/utils/common.dart';
 import './loginApi.dart';
 import 'package:flutterapp/components/customButton.dart';
 class Login extends StatefulWidget {
+  const Login({Key key}) : super(key: key);
   @override
-  Login({Key key}) : super(key: key);
-  createState() => LoginState();
+  _LoginState createState() => _LoginState();
 }
 
-class LoginState extends State<Login> {
-  static List routeList = [];
-
+class _LoginState extends State<Login> {
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void showSimpleDialog() {
+  void _showSimpleDialog() {
     List<Widget> list = [
       _chooseEnv('DEV'),
       _chooseEnv('TEST'),
@@ -55,7 +53,7 @@ class LoginState extends State<Login> {
 
   Future _onPush() async{
     await Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return Home(routeList: routeList);
+      return Home();
     }));
   }
 
@@ -64,6 +62,7 @@ class LoginState extends State<Login> {
       Global.showToast('手机号和密码不能为空');
       return null;
     }
+    FocusScope.of(context).requestFocus(FocusNode());
     var dataInfo = {
       'phone': _userController.text,
       'password': _passwordController.text
@@ -98,7 +97,7 @@ class LoginState extends State<Login> {
     }
   }
 
-  Widget backgroundImage(width, double height, String image){
+  Widget _backgroundImage(width, double height, String image){
     return new Container(
       width: width,
       height: height,
@@ -111,11 +110,11 @@ class LoginState extends State<Login> {
     );
   }
 
-  Widget inputItem(String label, Icon icon, bool obscureText, controller) {
+  Widget _inputItem(String label, Icon icon, bool obscureText, controller) {
     return new TextFormField(
       controller: controller,
       obscureText: obscureText,
-      keyboardType: TextInputType.phone,
+      keyboardType: TextInputType.number,
       decoration: InputDecoration(
         hintText: label,
         errorText: null,
@@ -128,7 +127,7 @@ class LoginState extends State<Login> {
     );
   }
 
-  Widget loginForm() {
+  Widget _loginForm() {
     return new Form(
       child: Container(
         padding: const EdgeInsets.all(2.0),
@@ -140,11 +139,11 @@ class LoginState extends State<Login> {
           children: <Widget>[
             Container(
               height: 50.0,
-              child: inputItem('手机号', Icon(Icons.person), false, _userController),
+              child: _inputItem('手机号', Icon(Icons.person), false, _userController),
             ),
             Container(
               height: 50.0,
-              child: inputItem('密码', Icon(Icons.lock), true, _passwordController),
+              child: _inputItem('密码', Icon(Icons.lock), true, _passwordController),
             )
           ],
         ),
@@ -152,7 +151,7 @@ class LoginState extends State<Login> {
     );
   }
 
-  Widget loginBackground() {
+  Widget _loginBackground() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,22 +160,22 @@ class LoginState extends State<Login> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            backgroundImage(87.7, 207.7, 'images/loginImages/login-left-top.png'),
+            _backgroundImage(87.7, 207.7, 'images/loginImages/login-left-top.png'),
             GestureDetector(
-              child: backgroundImage(92.6, 95.6, 'images/loginImages/login-right-top.png'),
+              child: _backgroundImage(92.6, 95.6, 'images/loginImages/login-right-top.png'),
               onDoubleTap: () {
-                showSimpleDialog();
+                _showSimpleDialog();
               },
             ),
           ],
         ),
-        backgroundImage(double.infinity, 247.4, 'images/loginImages/login-middle.png'),
+        _backgroundImage(double.infinity, 247.4, 'images/loginImages/login-middle.png'),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            backgroundImage(86.9, 98.3, 'images/loginImages/login-left-buttom.png'),
-            backgroundImage(133.7, 116.6, 'images/loginImages/login-right-buttom.png'),
+            _backgroundImage(86.9, 98.3, 'images/loginImages/login-left-buttom.png'),
+            _backgroundImage(133.7, 116.6, 'images/loginImages/login-right-buttom.png'),
           ],
         )
       ],
@@ -185,36 +184,42 @@ class LoginState extends State<Login> {
 
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: Container(
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('images/loginImages/login-background.png'),
-            fit: BoxFit.fill
-          )
-        ),
-        child: Stack(
-          children: <Widget>[
-            loginBackground(),
-            Center(
-              child: Container(
-                width: 242.3,
-                height: 450.1,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Image.asset('images/loginImages/logo.png', width: 62.5, height: 37.8,),
-                    loginForm(),
-                    CustomButton(text: '登陆', pressed: _onSubmit, width: double.infinity, textColor: Colors.white, color: Colors.blue,),
-                    Text('忘记密码?'),
-                    Text('版本号: 3.0')
-                  ],
+      resizeToAvoidBottomPadding: false,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Container(
+          height: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('images/loginImages/login-background.png'),
+              fit: BoxFit.fill
+            )
+          ),
+          child: Stack(
+            children: <Widget>[
+              _loginBackground(),
+              Center(
+                child: Container(
+                  width: 242.3,
+                  height: 450.1,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image.asset('images/loginImages/logo.png', width: 62.5, height: 37.8,),
+                      _loginForm(),
+                      CustomButton(text: '登陆', pressed: _onSubmit, width: double.infinity, textColor: Colors.white, color: Colors.blue,),
+                      Text('忘记密码?'),
+                      Text('版本号: 3.0')
+                    ],
+                  ),
                 ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
-      )
+      ),
     );
   }
 }

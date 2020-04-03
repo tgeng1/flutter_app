@@ -11,6 +11,12 @@ class LocalStorageUtil {
     return data;
   }
 
+  static Future<List<String>> getListInfo(String keyName) async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    List data = await _pref.getStringList(keyName);
+    return data;
+  }
+
   static Future<bool> saveInfo(String keyName, String value) async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     bool result = await _pref.setString(keyName, value);

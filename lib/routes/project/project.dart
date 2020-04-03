@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutterapp/routes/personal/personal.dart';
 class Project extends StatefulWidget {
   @override
-  createState() => ProjectState();
+  _ProjectState createState() => _ProjectState();
 }
 
-class ProjectState extends State<Project> {
+class _ProjectState extends State<Project> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -15,6 +15,7 @@ class ProjectState extends State<Project> {
             '中心'
         ),
       ),
+      drawer: Personal(),
     );
   }
 }

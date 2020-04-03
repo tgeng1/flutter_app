@@ -1,12 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutterapp/utils/common.dart';
+import 'package:flutterapp/utils/commonUtils.dart';
 import 'package:flutterapp/routes/login/login.dart';
+import './personalApi.dart';
 class Personal extends StatefulWidget {
+  const Personal({Key key}) : super(key: key);
   @override
-  createState() => PersonalState();
+  _PersonalState createState() => _PersonalState();
 }
 
-class PersonalState extends State<Personal> {
+class _PersonalState extends State<Personal> {
+  static Map<String, dynamic> _userInfo;
+  static String _userName;
+  void initState() {
+    super.initState();
+  }
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getUserInfo();
+  }
+
+  Future _getUserInfo() async{
+    String _userId = await LocalStorageUtil.getInfo('userId');
+    if (_userId.isNotEmpty) {
+      Map<String, dynamic> _result = await PersonalApi.getUserInf(_userId);
+      if (_result.isNotEmpty && _result['code'] == 'success') {
+        Map<String, dynamic> _userInfoResult = _result['payload'];
+        setState(() {
+          _userInfo = _userInfoResult;
+          _userName = _userInfoResult['name'];
+        });
+      }
+    }
+
+  }
   void resetPassword() {
     print('resetPassword');
   }
@@ -63,6 +90,8 @@ class PersonalState extends State<Personal> {
   }
   @override
   Widget build(BuildContext context) {
+    print('---------data---->$_userInfo');
+    print('----------name---->$_userName');
     return Drawer(
       child: Stack(
         children: <Widget>[
@@ -88,7 +117,7 @@ class PersonalState extends State<Personal> {
                     Container(
                       margin: EdgeInsets.only(bottom: 20, top: 10),
                       child: Text(
-                        '田庚',
+                        _userName ?? '',
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.w900,

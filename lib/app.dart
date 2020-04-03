@@ -6,10 +6,10 @@ import 'package:flutterapp/utils/common.dart';
 
 class App extends StatefulWidget {
   @override
-  createState() => new AppState();
+  _AppState createState() => new _AppState();
 }
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-class AppState extends State<App> {
+class _AppState extends State<App> {
 
   Widget startPage() {
     if (Global.token == null) {
