@@ -3,20 +3,10 @@ import 'package:flutterapp/utils/common.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
 import 'package:flutterapp/routes/login/login.dart';
 import './personalApi.dart';
-class Personal extends StatefulWidget {
-  const Personal({Key key}) : super(key: key);
-  @override
-  _PersonalState createState() => _PersonalState();
-}
-
-class _PersonalState extends State<Personal> {
-  static Map<String, dynamic> _userInfo;
-  static String _userName;
-  void initState() {
-    super.initState();
-  }
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+class Personal extends StatelessWidget {
+  Map<String, dynamic> _userInfo;
+  String _userName;
+  Personal({Key key}) : super(key: key) {
     _getUserInfo();
   }
 
@@ -26,10 +16,8 @@ class _PersonalState extends State<Personal> {
       Map<String, dynamic> _result = await PersonalApi.getUserInf(_userId);
       if (_result.isNotEmpty && _result['code'] == 'success') {
         Map<String, dynamic> _userInfoResult = _result['payload'];
-        setState(() {
-          _userInfo = _userInfoResult;
-          _userName = _userInfoResult['name'];
-        });
+        _userInfo = _userInfoResult;
+        _userName = _userInfoResult['name'];
       }
     }
 
@@ -42,7 +30,7 @@ class _PersonalState extends State<Personal> {
     print('clear');
   }
 
-  Future signOut() async{
+  Future signOut(context) async{
     await Global.signOut();
     Navigator.pushAndRemoveUntil(
       context,
@@ -90,8 +78,6 @@ class _PersonalState extends State<Personal> {
   }
   @override
   Widget build(BuildContext context) {
-    print('---------data---->$_userInfo');
-    print('----------name---->$_userName');
     return Drawer(
       child: Stack(
         children: <Widget>[
@@ -146,7 +132,7 @@ class _PersonalState extends State<Personal> {
                             color: Colors.white
                           ),
                         ),
-                        onTap: signOut,
+                        onTap: () {signOut(context);},
                       )
                     ],
                   ),

@@ -5,17 +5,26 @@ class Project extends StatefulWidget {
   _ProjectState createState() => _ProjectState();
 }
 
-class _ProjectState extends State<Project> {
+class _ProjectState extends State<Project> with AutomaticKeepAliveClientMixin{
   @override
+  bool get wantKeepAlive =>true;
+  void initState() {
+    print('---site------->');
+    super.initState();
+  }
   Widget build(BuildContext context) {
-    // TODO: implement build
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            '中心'
-        ),
+        centerTitle: true,
+        title: Text('中心'),
+        actions: <Widget>[
+          Icon(Icons.insert_chart),
+          Icon(Icons.message)
+        ],
       ),
       drawer: Personal(),
+      body: Center(child: Text('site'),),
     );
   }
 }

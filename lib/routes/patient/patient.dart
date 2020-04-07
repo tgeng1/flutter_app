@@ -6,17 +6,25 @@ class Patient extends StatefulWidget {
   _PatientState createState() => _PatientState();
 }
 
-class _PatientState extends State<Patient> {
+class _PatientState extends State<Patient> with AutomaticKeepAliveClientMixin{
   @override
+  bool get wantKeepAlive =>true;
+  void initState() {
+    print('---patient------->');
+    super.initState();
+  }
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            '患者'
-        ),
+        centerTitle: true,
+        title: Text('患者'),
+        actions: <Widget>[
+          Icon(Icons.insert_chart),
+          Icon(Icons.message)
+        ],
       ),
       drawer: Personal(),
+      body: Center(child: Text('patient'),),
     );
   }
 }

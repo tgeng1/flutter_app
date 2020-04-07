@@ -6,8 +6,6 @@ import 'package:flutterapp/routes/patient/patient.dart';
 import 'package:flutterapp/routes/clientAndVisiting/clientAndVisiting.dart';
 import 'package:flutterapp/routes/project/project.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
-import 'package:flutterapp/routes/personal/personal.dart';
-import 'package:flutterapp/components/customAppBar.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -16,25 +14,70 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final _homePageController = PageController();
+  int _currentIndex = 0;
+  static List<Widget> _routeList;
+  static List<BottomNavigationBarItem> _bottomNavigationBarList;
+  
   static void titleFnc() {
     _showLoading();
   }
-  static Widget _task = CustomAppBar(titleList: [{'title': '任务', 'fnc': titleFnc}]);
-  static Widget _patient = CustomAppBar(titleList: [{'title': '任务', 'fnc': titleFnc}]);
-  static Widget _clientAndVisiting = CustomAppBar(titleList: [{'title': '任务', 'fnc': titleFnc}]);
-  static Widget _project = CustomAppBar(titleList: [{'title': '任务', 'fnc': titleFnc}]);
-  static List<String> _accessRight = [];
-  int _currentIndex = 0;
-  List<Widget> _titleList = [_task, _patient, _clientAndVisiting, _project];
-  List<Widget> _routeList = [Task(), Patient(), ClientAndVisiting(), Project()];
+  static _bottomBarItem(icon, title) {
+    return BottomNavigationBarItem(
+      icon: Icon(
+        icon
+      ),
+      title: Text(
+        title
+      )
+    );
+  }
+  static var _taskBar = _bottomBarItem(Icons.list, '任务');
+  static var _patientBar = _bottomBarItem(Icons.person_add, '患者');
+  static var _clientBar = _bottomBarItem(Icons.contacts, '客户');
+  static var _projectBar = _bottomBarItem(Icons.hotel, '中心');
+
+  void _onChangePage(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
   @override
   void initState(){
+    _setPageList();
     super.initState();
 
   }
 
   void didChangeDependencies() {
     super.didChangeDependencies();
+  }
+
+  void _setPageList() {
+    List<Widget> _newRouteList = [Task(), Patient(), ClientAndVisiting(), Project()];
+    List<BottomNavigationBarItem> _newBarList = [_taskBar, _patientBar, _clientBar, _projectBar];
+    LocalStorageUtil.getListInfo('accessRight').then((accessRight) {
+      if (accessRight.indexOf('task.find') == -1) {
+        _newRouteList.remove(Task());
+        _newBarList.remove(_taskBar);
+      }
+      if (accessRight.indexOf('trialSubject.find') == -1) {
+        _newRouteList.remove(Patient());
+        _newBarList.remove(_patientBar);
+      }
+      if (accessRight.indexOf('client.find') == -1) {
+        _newRouteList.remove(ClientAndVisiting());
+        _newBarList.remove(_clientBar);
+      }
+      if (accessRight.indexOf('site.findTrialSites') == -1) {
+        _newRouteList.remove(Project());
+        _newBarList.remove(_projectBar);
+      }
+      setState(() {
+        _routeList = _newRouteList;
+        _bottomNavigationBarList = _newBarList;
+      });
+    });
   }
 
   static void _showLoading() {
@@ -48,54 +91,20 @@ class _HomeState extends State<Home> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: _titleList[_currentIndex],
+      body: PageView(
+        controller: _homePageController,
+        onPageChanged: _onChangePage,
+        children: _routeList,
+        physics: NeverScrollableScrollPhysics(),
       ),
-      drawer: Personal(),
-      body: _routeList[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.list
-            ),
-            title: Text(
-              '任务'
-            )
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(
-                  Icons.list
-              ),
-              title: Text(
-                  '患者'
-              )
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(
-                  Icons.list
-              ),
-              title: Text(
-                  '客户'
-              )
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(
-                  Icons.list
-              ),
-              title: Text(
-                  '中心'
-              )
-          )
-        ],
+        items: _bottomNavigationBarList,
         currentIndex: _currentIndex,
         onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          _homePageController.jumpToPage(index);
         },
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: Color(0xFF0DB0D4),
+        unselectedItemColor: Color(0xFF75859E),
         type: BottomNavigationBarType.fixed,
       ),
     );
