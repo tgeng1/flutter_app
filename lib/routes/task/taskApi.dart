@@ -1,15 +1,12 @@
-import 'package:flutterapp/api/userServiceApi.dart';
+import 'package:flutterapp/api/taskServiceApi.dart';
 import 'package:flutterapp/api/httpCode/index.dart';
+class TaskApi {
 
-class PersonalApi {
-  /**
-   * Get userInf list
-   * @param  {string} id the user ID
-   */
-  static Future getUserInf(id) async{
+  // Get task list
+  static Future getTasks(listData) async{
     try {
-      // Call get userInf api
-      var result = await UserServiceApi.getUserInf(id);
+      // Call edit password api
+      var result = await TaskServiceApi.getTasks(listData['startTime'], listData['endTime'], listData['sortByCompleteness'], listData['pageSize'], listData['pageNo']);
 
       // Return data processing
       switch (result['code']) {
@@ -18,11 +15,6 @@ class PersonalApi {
             'code': 'success',
             'msg': result['msg'],
             'payload': result['payload']
-          };
-        case HttpCode.USER_IS_NOT_EXIST:
-          return {
-            'code': HttpCode.USER_IS_NOT_EXIST,
-            'msg': '无效用户，请重新登录！'
           };
         default:
           return {

@@ -5,6 +5,7 @@ import 'package:flutterapp/utils/commonUtils.dart';
 import 'package:flutterapp/utils/common.dart';
 import './loginApi.dart';
 import 'package:flutterapp/components/customButton.dart';
+import 'package:flutterapp/components/customLoading.dart';
 class Login extends StatefulWidget {
   const Login({Key key}) : super(key: key);
   @override
@@ -30,6 +31,15 @@ class _LoginState extends State<Login> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
           children: list,
         );
+      }
+    );
+  }
+
+  void _showLoading() {
+    showDialog<Null>(
+      context: context,
+      builder: (context) {
+        return CustomLoading(text: '登录中.....');
       }
     );
   }
@@ -67,29 +77,32 @@ class _LoginState extends State<Login> {
       'phone': _userController.text,
       'password': _passwordController.text
     };
-    var result = await LoginApi.userLogin(dataInfo);
-    print(result);
-    if (result != null && result['code'] == 'success') {
-      var updateUserInfo = await Global.updateUserData(result['payload']['token'], result['payload']['_id']);
+    var _result = await LoginApi.userLogin(dataInfo);
+    _showLoading();
+    if (_result != null && _result['code'] == 'success') {
+      var updateUserInfo = await Global.updateUserData(_result['payload']['token'], _result['payload']['_id']);
       if (updateUserInfo == true) {
         _getConfig();
       }
+    } else {
+      Navigator.pop(context);
+      Global.showToast(_result['msg']);
     }
   }
 
   Future _getConfig() async {
-    var result = await LoginApi.getConfig();
-    if (result != null && result['code'] == 'success') {
+    var _result = await LoginApi.getConfig();
+    if (_result != null && _result['code'] == 'success') {
       _setAccessRight();
-      var configPayload = result['payload'] ?? {};
+      var configPayload = _result['payload'] ?? {};
       await Global.setConfig(configPayload);
     }
   }
 
   Future _setAccessRight() async {
-    var result = await LoginApi.getUserAccess();
-    if (result != null && result['code'] == 'success') {
-      List accessRightPayload = result['payload'] ?? [];
+    var _result = await LoginApi.getUserAccess();
+    if (_result != null && _result['code'] == 'success') {
+      List accessRightPayload = _result['payload'] ?? [];
       List<String> accessRightList = [];
       accessRightPayload.map((item) => accessRightList.add(item)).toList();
       await Global.setAccessRight(accessRightList);

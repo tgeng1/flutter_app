@@ -1,5 +1,6 @@
 import 'package:flutterapp/app.dart';
 import 'package:flutterapp/components/customDialog.dart';
+import 'package:flutterapp/components/customLoading.dart';
 import 'package:flutterapp/utils/commonUtils.dart';
 import 'package:flutterapp/routes/login/login.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +67,15 @@ class Global {
         fontSize: 16.0
     );
   }
+
+  // static Widget showLoading(_context, _text) {
+  //   showDialog<Null>(
+  //     context: _context,
+  //     builder: (context) {
+  //       return CustomLoading(text: _text);
+  //     }
+  //   );
+  // }
 
   static void signOutAboutNotAccess() {
     showDialog<Null>(

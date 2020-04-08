@@ -1,15 +1,24 @@
-import 'package:flutterapp/api/userServiceApi.dart';
+import 'package:flutterapp/api/patientServiceApi.dart';
 import 'package:flutterapp/api/httpCode/index.dart';
-
-class PersonalApi {
+class PatientApi {
   /**
-   * Get userInf list
-   * @param  {string} id the user ID
+   * Get subjects
+   * @param  {Object} listData    the API data object
    */
-  static Future getUserInf(id) async{
+  static Future getSubjects(listData) async{
     try {
-      // Call get userInf api
-      var result = await UserServiceApi.getUserInf(id);
+      // Call get subjects api
+      var result = await PatientServiceApi.getSubjects(
+        listData['trialID'],
+        listData['startTime'],
+        listData['endTime'],
+        listData['stageName'],
+        listData['stageResult'],
+        listData['isReserved'],
+        listData['name'],
+        listData['pageSize'],
+        listData['pageNo']
+      );
 
       // Return data processing
       switch (result['code']) {
@@ -18,11 +27,6 @@ class PersonalApi {
             'code': 'success',
             'msg': result['msg'],
             'payload': result['payload']
-          };
-        case HttpCode.USER_IS_NOT_EXIST:
-          return {
-            'code': HttpCode.USER_IS_NOT_EXIST,
-            'msg': '无效用户，请重新登录！'
           };
         default:
           return {
