@@ -10,7 +10,7 @@ class CustomLoading extends Dialog {
       width: double.infinity,
       height: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.grey
+        color: Color.fromRGBO(245, 245, 245, 0.5),
       ),
       child: Center(
         child: Container(

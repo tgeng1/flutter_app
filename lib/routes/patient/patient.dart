@@ -10,7 +10,9 @@ class Patient extends StatefulWidget {
 }
 
 class _PatientState extends State<Patient> with AutomaticKeepAliveClientMixin{
-  // static List<dynamic> _subjectList = [];
+  ScrollController _controller = new ScrollController();
+  static List<dynamic> _subjectList = [];
+  static int _subjectCount = 0;
   static var today = DateTime.now();
   static String _trialID = '';
   static var _startTime = today.subtract(Duration(days: 4200)).millisecondsSinceEpoch;
@@ -22,7 +24,23 @@ class _PatientState extends State<Patient> with AutomaticKeepAliveClientMixin{
   static int _pageSize = 10;
   static int patientPageNo = 1;
 
-  Future _getSubjectList() async{
+  @override
+  initState() {
+    _controller.addListener(() {
+      if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+        _getSubjectList(true);
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future _getSubjectList([bool _isLoadMore = false]) async{
     Map<String, dynamic> _dataInfo = {
       'trialID': _trialID,
       'startTime': _startTime,
@@ -37,6 +55,11 @@ class _PatientState extends State<Patient> with AutomaticKeepAliveClientMixin{
     Map<String, dynamic> _result = await PatientApi.getSubjects(_dataInfo);
     if (_result.isNotEmpty && _result['code'] == 'success') {
       List<dynamic> _subjectListInfo = _result['payload']['trialSubjects'];
+      if (_isLoadMore) {
+        _subjectList.addAll(_subjectListInfo);
+      } else {
+        _subjectList = _subjectListInfo;
+      }
       return _subjectListInfo;
     }
   }
@@ -78,15 +101,15 @@ class _PatientState extends State<Patient> with AutomaticKeepAliveClientMixin{
     );
   }
 
-  Widget _subjectItem(_subjectInfo, _index) {
-    String _subjectName = _subjectInfo[_index]['subject']['name'] ?? '--';
-    Map<String, dynamic> _currentStage = _subjectInfo[_index]['currentStage'] ?? {};
-    Map<String, dynamic> _trialInfo = _subjectInfo[_index]['trial'] ?? {};
+  Widget _subjectItem(_subjectInfo) {
+    String _subjectName = _subjectInfo['subject']['name'] ?? '--';
+    Map<String, dynamic> _currentStage = _subjectInfo['currentStage'] ?? {};
+    Map<String, dynamic> _trialInfo = _subjectInfo['trial'] ?? {};
 
-    String _uTime = _subjectInfo[_index]['utime'];
+    String _uTime = _subjectInfo['utime'];
     var _date = _uTime != null ? formatDate(DateTime.parse(_uTime), [yyyy, '-', mm, '-', dd]) :'--';
 
-    String _agent = _renderAgent(_subjectInfo[_index])['agent'];
+    String _agent = _renderAgent(_subjectInfo)['agent'];
 
     String _stageState = '成功';
     List<Color> _cardColor = [Color(0xFFD37F13), Color(0xFFCFAF02)];
@@ -166,7 +189,7 @@ class _PatientState extends State<Patient> with AutomaticKeepAliveClientMixin{
         ],
       ),
       drawer: Personal(),
-      body: Center(
+      body: RefreshIndicator(
         child: FutureBuilder(
           future: _getSubjectList(),
           initialData: [],
@@ -176,10 +199,12 @@ class _PatientState extends State<Patient> with AutomaticKeepAliveClientMixin{
                 return Text("Error: ${snapshot.error}");
               } else {
                 return ListView.builder(
+                  controller: _controller,
+                  shrinkWrap: true,
                   itemCount: snapshot.data.length,
                   itemExtent: 155.0,
                   itemBuilder: (BuildContext context, int index) {
-                    return _subjectItem(snapshot.data, index);
+                    return _subjectItem(snapshot.data[index]);
                   }
                 );
               }
@@ -189,7 +214,8 @@ class _PatientState extends State<Patient> with AutomaticKeepAliveClientMixin{
             }
           },
         ),
-      ),
+        onRefresh: _getSubjectList,
+      )
     );
   }
 }

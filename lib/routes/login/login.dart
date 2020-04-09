@@ -5,7 +5,6 @@ import 'package:flutterapp/utils/commonUtils.dart';
 import 'package:flutterapp/utils/common.dart';
 import './loginApi.dart';
 import 'package:flutterapp/components/customButton.dart';
-import 'package:flutterapp/components/customLoading.dart';
 class Login extends StatefulWidget {
   const Login({Key key}) : super(key: key);
   @override
@@ -31,15 +30,6 @@ class _LoginState extends State<Login> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
           children: list,
         );
-      }
-    );
-  }
-
-  void _showLoading() {
-    showDialog<Null>(
-      context: context,
-      builder: (context) {
-        return CustomLoading(text: '登录中.....');
       }
     );
   }
@@ -78,7 +68,6 @@ class _LoginState extends State<Login> {
       'password': _passwordController.text
     };
     var _result = await LoginApi.userLogin(dataInfo);
-    _showLoading();
     if (_result != null && _result['code'] == 'success') {
       var updateUserInfo = await Global.updateUserData(_result['payload']['token'], _result['payload']['_id']);
       if (updateUserInfo == true) {
